@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 import org.jdom2.Element;
 
 import java.util.ArrayList;
@@ -18,15 +20,17 @@ import java.util.List;
 
 public class Nivel extends ScreenAdapter {
 
-    private final Music musica;
+    private Music musica;
     private final float ancho;
     private final float alto;
     private final OrthographicCamera camara;
     private final MyGdxGame game;
     private Peon jugador;
-    List<Peon> tiposMalos = new ArrayList<>();
+    List<Plantilla> tiposMalos = new ArrayList<>();
 
     private List<Peon> jugadores = new ArrayList<>();
+    private List<Peon> malos = new ArrayList<>();
+    private long ultimoDrop;
 
     public Nivel(MyGdxGame game, Element xml) {
 
@@ -40,20 +44,22 @@ public class Nivel extends ScreenAdapter {
 
         jugador = new Peon(xml.getChild("jugador"));
 
-        for (Element e : xml.getChildren("malo")) tiposMalos.add(new Peon(e));
+        for (Element e : xml.getChildren("malo")) tiposMalos.add(new Plantilla(e));
 
-        musica = Gdx.audio.newMusic(Gdx.files.internal(xml.getChild("musica").getAttributeValue("src")));
-        musica.setLooping(true);
+        if (xml.getChild("musica") != null) {
+            musica = Gdx.audio.newMusic(Gdx.files.internal(xml.getChild("musica").getAttributeValue("src")));
+            musica.setLooping(true);
+        }
 
-
+        crearMalo();
     }
 
     public void start() {
-        musica.play();
+        if (musica != null) musica.play();
     }
 
     public void stop() {
-        musica.stop();
+        if (musica != null) musica.stop();
     }
 
 
@@ -87,8 +93,11 @@ public class Nivel extends ScreenAdapter {
 
         game.batch.setProjectionMatrix(camara.combined);
         game.batch.begin();
-        jugador.getSprite().draw(game.batch);
-        //game.batch.draw(jugador.getSprite(), jugador.getX(), jugador.getY());
+
+        jugador.draw(game.batch);
+
+        for (Peon malo : malos) malo.draw(game.batch);
+
         game.batch.end();
 
 
@@ -106,6 +115,33 @@ public class Nivel extends ScreenAdapter {
 
         if (jugador.getX() < 0) jugador.setX(0);
         if (jugador.getX() > ancho - jugador.getAncho()) jugador.setX(ancho - jugador.getAncho());
+        
+        
+        
+        if (TimeUtils.nanoTime() - ultimoDrop > 1000000000) crearMalo();
+
+        List<Peon> borrar = new ArrayList<>();
+        for (Peon malo : malos) {
+            malo.setY(malo.getY() - 200 * delta);
+            if (malo.getY() < 0) borrar.add(malo);
+            if (malo.getRect().overlaps(jugador.getRect())) {
+                malo.destruido();
+                borrar.add(malo);
+                System.out.println("hit");
+            }
+        }
+        malos.removeAll(borrar);
+    }
+
+    public void crearMalo() {
+        ultimoDrop = TimeUtils.nanoTime();
+
+        Peon malo;
+        malos.add(malo = new Peon(tiposMalos.get(0)));
+
+        malo.setX(MathUtils.random(0, ancho - malo.getAncho()));
+        malo.setY(alto);
+
     }
 
 

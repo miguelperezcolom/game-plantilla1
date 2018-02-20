@@ -6,10 +6,10 @@
 
         <jugador img="ship1.png" ancho="64" alto="64"/>
 
-        <malo img="alien1.png" ancho="64" alto="64"/>
+        <malo img="alien1.png" ancho="64" alto="64" origen="random" sonidoDestruido="blast.wav"/>
 
 
-        <musica src="masai.mp3"/>
+        <musicax src="masai.mp3"/>
 
     </nivel>
 </juego>

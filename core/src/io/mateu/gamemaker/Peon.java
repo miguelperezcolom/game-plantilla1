@@ -11,4 +11,7 @@ public class Peon extends Actor {
         super(xml);
     }
 
+    public Peon(Plantilla plantilla) {
+        super(plantilla);
+    }
 }
