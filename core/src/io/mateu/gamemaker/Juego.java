@@ -1,9 +1,7 @@
 package io.mateu.gamemaker;
 
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import org.jdom2.Element;
+import com.badlogic.gdx.utils.XmlReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +17,10 @@ public class Juego {
     private Menu menu;
 
 
-    public Juego(MyGdxGame game, Element xml) {
+    public Juego(MyGdxGame game, XmlReader.Element xml) {
         this.game = game;
-        for (Element e : xml.getChildren("nivel")) niveles.add(new Nivel(game, e));
-        menu = new Menu(this, game, xml.getChild("menu"));
+        for (XmlReader.Element e : xml.getChildrenByName("nivel")) niveles.add(new Nivel(game, e));
+        menu = new Menu(this, game, xml.getChildByName("menu"));
     }
 
     public float getAncho() {

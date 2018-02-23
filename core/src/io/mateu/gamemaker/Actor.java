@@ -1,18 +1,15 @@
 package io.mateu.gamemaker;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Scaling;
-import org.jdom2.Element;
+import com.badlogic.gdx.utils.XmlReader;
 
 public class Actor {
 
     private final Plantilla plantilla;
     private Rectangle rect;
 
-    public Actor(Element xml) {
+    public Actor(XmlReader.Element xml) {
         plantilla = new Plantilla(xml);
         rect = new Rectangle();
         rect.width = plantilla.getAncho();

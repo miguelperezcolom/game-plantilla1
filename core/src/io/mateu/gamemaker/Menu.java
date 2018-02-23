@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import org.jdom2.Element;
+import com.badlogic.gdx.utils.XmlReader;
 
 public class Menu extends ScreenAdapter {
 
@@ -14,12 +14,12 @@ public class Menu extends ScreenAdapter {
     private final Juego juego;
     private OrthographicCamera camara;
 
-    public Menu(Juego juego, MyGdxGame game, Element xml) {
+    public Menu(Juego juego, MyGdxGame game, XmlReader.Element xml) {
         this.juego = juego;
         this.game = game;
 
-        ancho = Float.parseFloat(xml.getAttributeValue("ancho"));
-        alto = Float.parseFloat(xml.getAttributeValue("alto"));
+        ancho = Float.parseFloat(xml.getAttribute("ancho"));
+        alto = Float.parseFloat(xml.getAttribute("alto"));
         
         camara = new OrthographicCamera();
         camara.setToOrtho(false, ancho, alto);

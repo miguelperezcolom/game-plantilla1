@@ -1,13 +1,11 @@
 package io.mateu.gamemaker;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
-import org.jdom2.Element;
+import com.badlogic.gdx.utils.XmlReader;
 
 public class Peon extends Actor {
 
 
-    public Peon(Element xml) {
+    public Peon(XmlReader.Element xml) {
         super(xml);
     }
 

@@ -2,18 +2,14 @@ package io.mateu.gamemaker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
-import org.jdom2.Element;
+import com.badlogic.gdx.utils.XmlReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +28,22 @@ public class Nivel extends ScreenAdapter {
     private List<Peon> malos = new ArrayList<>();
     private long ultimoDrop;
 
-    public Nivel(MyGdxGame game, Element xml) {
+    public Nivel(MyGdxGame game, XmlReader.Element xml) {
 
         this.game = game;
 
-        ancho = Float.parseFloat(xml.getAttributeValue("ancho"));
-        alto = Float.parseFloat(xml.getAttributeValue("alto"));
+        ancho = Float.parseFloat(xml.getAttribute("ancho"));
+        alto = Float.parseFloat(xml.getAttribute("alto"));
 
         camara = new OrthographicCamera();
         camara.setToOrtho(false, ancho, alto);
 
-        jugador = new Peon(xml.getChild("jugador"));
+        jugador = new Peon(xml.getChildByName("jugador"));
 
-        for (Element e : xml.getChildren("malo")) tiposMalos.add(new Plantilla(e));
+        for (XmlReader.Element e : xml.getChildrenByName("malo")) tiposMalos.add(new Plantilla(e));
 
-        if (xml.getChild("musica") != null) {
-            musica = Gdx.audio.newMusic(Gdx.files.internal(xml.getChild("musica").getAttributeValue("src")));
+        if (xml.getChildByName("musica") != null) {
+            musica = Gdx.audio.newMusic(Gdx.files.internal(xml.getChildByName("musica").getAttribute("src")));
             musica.setLooping(true);
         }
 

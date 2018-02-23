@@ -4,8 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
-import org.jdom2.Element;
+import com.badlogic.gdx.utils.XmlReader;
 
 public class Plantilla {
 
@@ -17,14 +16,14 @@ public class Plantilla {
     private float alto;
     
 
-    public Plantilla(Element xml) {
-        ancho = Float.parseFloat(xml.getAttributeValue("ancho"));
-        alto = Float.parseFloat(xml.getAttributeValue("alto"));
-        img = new Texture(xml.getAttributeValue("img"));
+    public Plantilla(XmlReader.Element xml) {
+        ancho = Float.parseFloat(xml.getAttribute("ancho"));
+        alto = Float.parseFloat(xml.getAttribute("alto"));
+        img = new Texture(xml.getAttribute("img"));
         sprite = new Sprite(img); // Creates a sprite from a Texture
         sprite.setScale(ancho / img.getWidth(), alto / img.getHeight());
         sprite.setOrigin(0, 0);
-        if (xml.getAttribute("sonidoDestruido") != null) sonidoDestruido = Gdx.audio.newSound(Gdx.files.internal(xml.getAttributeValue("sonidoDestruido")));
+        if (xml.hasAttribute("sonidoDestruido")) sonidoDestruido = Gdx.audio.newSound(Gdx.files.internal(xml.getAttribute("sonidoDestruido")));
     }
 
     public Texture getImg() {
