@@ -12,7 +12,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.XmlReader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Nivel extends ScreenAdapter {
 
@@ -26,7 +28,7 @@ public class Nivel extends ScreenAdapter {
 
     private List<Peon> jugadores = new ArrayList<>();
     private List<Peon> malos = new ArrayList<>();
-    private long ultimoDrop;
+    private Map<Plantilla, Long> ultimoDrop;
 
     public Nivel(MyGdxGame game, XmlReader.Element xml) {
 
@@ -47,7 +49,8 @@ public class Nivel extends ScreenAdapter {
             musica.setLooping(true);
         }
 
-        crearMalo();
+        ultimoDrop = new HashMap<>();
+        for (Plantilla p : tiposMalos) ultimoDrop.put(p, TimeUtils.nanoTime());
     }
 
     public void start() {
@@ -112,9 +115,8 @@ public class Nivel extends ScreenAdapter {
         if (jugador.getX() < 0) jugador.setX(0);
         if (jugador.getX() > ancho - jugador.getAncho()) jugador.setX(ancho - jugador.getAncho());
         
-        
-        
-        if (TimeUtils.nanoTime() - ultimoDrop > 1000000000) crearMalo();
+        long ahora = TimeUtils.nanoTime();
+        for (Plantilla p : tiposMalos) if (ahora - ultimoDrop.get(p) > p.getFrecuencia()) crearMalo(p);
 
         List<Peon> borrar = new ArrayList<>();
         for (Peon malo : malos) {
@@ -129,11 +131,12 @@ public class Nivel extends ScreenAdapter {
         malos.removeAll(borrar);
     }
 
-    public void crearMalo() {
-        ultimoDrop = TimeUtils.nanoTime();
+    public void crearMalo(Plantilla plantilla) {
+
+        ultimoDrop.put(plantilla, TimeUtils.nanoTime());
 
         Peon malo;
-        malos.add(malo = new Peon(tiposMalos.get(0)));
+        malos.add(malo = new Peon(plantilla));
 
         malo.setX(MathUtils.random(0, ancho - malo.getAncho()));
         malo.setY(alto);
