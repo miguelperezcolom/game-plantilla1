@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.XmlReader;
+import io.mateu.gamemaker.test.TestScreenAdapter;
 
 public class MyGdxGame extends Game {
 	SpriteBatch batch;
@@ -18,18 +19,23 @@ public class MyGdxGame extends Game {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 
+		Gdx.graphics.setTitle("Test GUI");
+
 		try {
+			/*
 			xml = new XmlReader().parse(Gdx.files.internal("juego.xml"));
 
 			juego = new Juego(this, xml);
+			*/
+			setScreen(new TestScreenAdapter());
 
-			juego.start();
+			//juego.start();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		System.out.println("Juego=" + xml.getAttribute("nombre"));
+		//System.out.println("Juego=" + xml.getAttribute("nombre"));
 
 	}
 
