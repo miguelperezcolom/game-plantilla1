@@ -21,7 +21,9 @@ public class Plantilla {
     public Plantilla(XmlReader.Element xml) {
         ancho = Float.parseFloat(xml.getAttribute("ancho"));
         alto = Float.parseFloat(xml.getAttribute("alto"));
-        img = new Texture(xml.getAttribute("img"));
+        String urlimg = xml.getAttribute("img");
+        if (urlimg.startsWith("/")) urlimg = urlimg.substring(1);
+        img = new Texture(urlimg);
         sprite = new Sprite(img); // Creates a sprite from a Texture
         sprite.setScale(ancho / img.getWidth(), alto / img.getHeight());
         sprite.setOrigin(0, 0);
