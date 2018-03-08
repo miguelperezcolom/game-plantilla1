@@ -325,7 +325,7 @@ public class Nivel extends ScreenAdapter {
 
                 Juego.get().vidas --;
 
-                Gdx.input.vibrate(1000);
+                Gdx.input.vibrate(500);
 
             }
 
@@ -355,7 +355,7 @@ public class Nivel extends ScreenAdapter {
 
                 Juego.get().vidas --;
 
-                Gdx.input.vibrate(1000);
+                Gdx.input.vibrate(500);
             }
         }
 
