@@ -1,0 +1,82 @@
+explo.png
+size: 1010, 940
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Explo_
+  rotate: false
+  xy: 851, 289
+  size: 93, 95
+  orig: 394, 359
+  offset: 119, 90
+  index: 0
+Explo_
+  rotate: true
+  xy: 795, 586
+  size: 269, 214
+  orig: 394, 359
+  offset: 28, 28
+  index: 1
+Explo_
+  rotate: true
+  xy: 620, 306
+  size: 278, 229
+  orig: 394, 359
+  offset: 19, 30
+  index: 2
+Explo_
+  rotate: false
+  xy: 397, 1
+  size: 337, 303
+  orig: 394, 359
+  offset: 23, 28
+  index: 3
+Explo_
+  rotate: false
+  xy: 1, 1
+  size: 394, 329
+  orig: 394, 359
+  offset: 0, 30
+  index: 4
+Explo_
+  rotate: true
+  xy: 344, 332
+  size: 279, 274
+  orig: 394, 359
+  offset: 35, 25
+  index: 5
+Explo_
+  rotate: false
+  xy: 1, 332
+  size: 341, 309
+  orig: 394, 359
+  offset: 0, 0
+  index: 6
+Explo_
+  rotate: false
+  xy: 270, 643
+  size: 247, 288
+  orig: 394, 359
+  offset: 49, 8
+  index: 7
+Explo_
+  rotate: false
+  xy: 519, 613
+  size: 274, 275
+  orig: 394, 359
+  offset: 23, 39
+  index: 8
+Explo_
+  rotate: false
+  xy: 736, 1
+  size: 263, 286
+  orig: 394, 359
+  offset: 36, 25
+  index: 9
+Explo_
+  rotate: false
+  xy: 1, 643
+  size: 267, 296
+  orig: 394, 359
+  offset: 25, 10
+  index: 10

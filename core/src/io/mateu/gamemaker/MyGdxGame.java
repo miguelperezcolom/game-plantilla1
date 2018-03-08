@@ -22,13 +22,17 @@ public class MyGdxGame extends Game {
 		Gdx.graphics.setTitle("Test GUI");
 
 		try {
-			/*
+
 			xml = new XmlReader().parse(Gdx.files.internal("juego.xml"));
 
 			juego = new Juego(this, xml);
-			*/
-			setScreen(new TestScreenAdapter());
 
+			//setScreen(new TestScreen(juego, this, null));
+
+			//setScreen(new TestScreenAdapter());
+
+			juego.setNivelActual(juego.getNiveles().get(0));
+			//juego.setNivelActual(new Nivel(this, xml.getChildrenByName("nivel").get(0)));
 			//juego.start();
 
 		} catch (Exception e) {
@@ -44,5 +48,6 @@ public class MyGdxGame extends Game {
 	public void dispose () {
 		batch.dispose();
 		//imgJugador.dispose();
+		font.dispose();
 	}
 }

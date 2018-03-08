@@ -1,6 +1,10 @@
 package io.mateu.gamemaker;
 
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.XmlReader;
 
 import java.util.ArrayList;
@@ -8,19 +12,41 @@ import java.util.List;
 
 public class Juego {
 
+    private final Preferences prefs;
+    public Skin skin;
     private final MyGdxGame game;
+    private static Juego instancia;
+
+
+    private Sound levelUpSound;
+
     private float ancho;
     private float alto;
 
     private List<Nivel> niveles = new ArrayList<>();
     private Nivel nivelActual;
     private Menu menu;
+    public FinPartida finPartida;
+
+    public int puntos = 0;
+    public int vidas = 3;
 
 
     public Juego(MyGdxGame game, XmlReader.Element xml) {
+        this.instancia = this;
         this.game = game;
+        skin = new Skin(Gdx.files.internal("skin/freezing-ui.json"));
+
         for (XmlReader.Element e : xml.getChildrenByName("nivel")) niveles.add(new Nivel(game, e));
+
         menu = new Menu(this, game, xml.getChildByName("menu"));
+        finPartida = new FinPartida(this, game, xml.getChildByName("menu"));
+
+        if (xml.hasAttribute("sonidoRecord")) {
+            levelUpSound = Gdx.audio.newSound(Gdx.files.internal(xml.getAttribute("sonidoRecord")));
+        }
+
+        prefs = Gdx.app.getPreferences("Mis preferencias");
     }
 
     public float getAncho() {
@@ -61,4 +87,19 @@ public class Juego {
         game.setScreen((nivelActual != null)?nivelActual:menu);
     }
 
+    public static Juego get() {
+        return instancia;
+    }
+
+    public Preferences getPrefs() {
+        return prefs;
+    }
+
+    public Sound getLevelUpSound() {
+        return levelUpSound;
+    }
+
+    public void setLevelUpSound(Sound levelUpSound) {
+        this.levelUpSound = levelUpSound;
+    }
 }

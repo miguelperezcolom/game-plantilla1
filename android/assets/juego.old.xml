@@ -1,6 +1,6 @@
 <juego nombre="ssss">
-    <menu ancho="800" alto="600" />
-    <nivel nombre="l1" ancho="800" alto="600">
+    <menu ancho="1066" alto="600" />
+    <nivel nombre="l1" ancho="1066" alto="600">
         <jugador img="nave1x.png" ancho="64" alto="64" />1
         <malo img="marciano1x.png" ancho="64" alto="64" frecuencia="100000" sonidoDestruido="blast.wav" />
         <malo img="marciano2x.png" ancho="64" alto="64" frecuencia="500000" sonidoDestruido="blast.wav" />
