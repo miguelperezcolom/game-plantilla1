@@ -34,7 +34,7 @@ import java.util.Map;
 public class Nivel extends ScreenAdapter {
 
     private final Stage stage;
-    private final Touchpad tp;
+    //private final Touchpad tp;
     private final Stage stageFondo;
     private final Label lscore;
     private final Label lvidas;
@@ -47,6 +47,13 @@ public class Nivel extends ScreenAdapter {
     private final MyGdxGame game;
     private Peon jugador;
     List<Plantilla> tiposMalos = new ArrayList<>();
+    long lastShot = 0;
+    long inicioNivel = 0;
+    float dificultad = 0;
+
+    int oldX = 0;
+    int oldY = 0;
+
 
     private List<Peon> jugadores = new ArrayList<>();
     protected List<Peon> malos = new ArrayList<>();
@@ -65,6 +72,7 @@ public class Nivel extends ScreenAdapter {
               "parallax-space-stars.png"
               */
     };
+    public boolean disparando;
 
 
     public Nivel(MyGdxGame game, XmlReader.Element xml) {
@@ -99,7 +107,32 @@ public class Nivel extends ScreenAdapter {
         for (Plantilla p : tiposMalos) ultimoDrop.put(p, TimeUtils.nanoTime());
 
 
-        stage = new Stage();
+        stage = new Stage() {
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                oldX = screenX;
+                oldY = screenY;
+                disparando = true;
+                return super.touchDown(screenX, screenY, pointer, button);
+            }
+
+            @Override
+            public boolean touchDragged(int screenX, int screenY, int pointer) {
+                if (jugador.isActivo()) {
+                    jugador.setX(jugador.getX() + screenX - oldX);
+                    jugador.setY(jugador.getY() - screenY + oldY);
+                }
+                oldX = screenX;
+                oldY = screenY;
+                return super.touchDragged(screenX, screenY, pointer);
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                disparando = false;
+                return super.touchUp(screenX, screenY, pointer, button);
+            }
+        };
 
         TextButton b;
         stage.addActor(b = new TextButton("||", Juego.get().skin));
@@ -129,6 +162,7 @@ public class Nivel extends ScreenAdapter {
         lvidas.setHeight(20f);
         lvidas.setPosition(Gdx.graphics.getWidth() - 120, Gdx.graphics.getHeight() - 60f);
 
+        /*
         
         stage.addActor(b = new TextButton("F", Juego.get().skin));
         b.setWidth(100f);
@@ -143,13 +177,14 @@ public class Nivel extends ScreenAdapter {
 
             }
         });
+        */
 
 
-
+        /*
         tp = new Touchpad(0, getTouchPadStyle());
         tp.setBounds(Gdx.graphics.getWidth() - 160, 10, 150, 150);
         stage.addActor(tp);
-
+           */
 
         /*
         tp.addListener(new ChangeListener() {
@@ -223,8 +258,21 @@ public class Nivel extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
+        if (inicioNivel == 0) inicioNivel = TimeUtils.millis();
+
+        dificultad = TimeUtils.millis() - inicioNivel;
+
         camara.update();
         game.batch.setProjectionMatrix(camara.combined);
+
+
+        if (disparando && jugador.isActivo()) {
+            long t = System.currentTimeMillis();
+            if (lastShot == 0 || t - lastShot > 200) {
+                lastShot = t;
+                disparar();
+            }
+        }
 
         stageFondo.act(delta);
 
@@ -253,16 +301,18 @@ public class Nivel extends ScreenAdapter {
         jugador.act(delta);
         for (Peon malo : malos) malo.act(delta);
 
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) jugador.acelerarX(-10);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) jugador.acelerarX(-10);
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) jugador.acelerarX(10);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) jugador.acelerarY(-10);
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) jugador.acelerarY(10);
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) disparar();
 
 
+
+        /*
         jugador.acelerarX(30 * tp.getKnobPercentX());
         jugador.acelerarY(30 * tp.getKnobPercentY());
-
+        */
 
 
         if (jugador.getX() < jugador.getAncho()) {
@@ -285,9 +335,13 @@ public class Nivel extends ScreenAdapter {
 
 
         long ahora = TimeUtils.nanoTime();
-        for (Plantilla p : tiposMalos) if (ahora - ultimoDrop.get(p) > p.getFrecuencia()) crearMalo(p);
+        for (Plantilla p : tiposMalos) {
+            long f = p.getFrecuencia();
+            f -= 500000 * dificultad / 1000;
+            if (ahora - ultimoDrop.get(p) > f) crearMalo(p);
+        }
 
-        for (Peon m : malos) if (m.isActivo() && MathUtils.random(0, 300) == 0) disparar(m, balaEnemiga);
+        for (Peon m : malos) if (m.isActivo() && MathUtils.random(0, 40) == 0) disparar(m, balaEnemiga);
 
         List<Peon> borrar = new ArrayList<>();
 
@@ -305,7 +359,7 @@ public class Nivel extends ScreenAdapter {
             malo.act(delta);
             if (malo.getY() < 0) borrar.add(malo);
 
-            for (Peon bala : balasAmigas) if (!borrar.contains(bala) && bala.getRect().overlaps(malo.getRect())) {
+            if (malo.isActivo()) for (Peon bala : balasAmigas) if (!borrar.contains(bala) && bala.getRect().overlaps(malo.getRect())) {
                 malo.destruido();
 
                 Juego.get().puntos += 10;
@@ -411,6 +465,7 @@ public class Nivel extends ScreenAdapter {
         super.show();
         System.out.println("show");
         Gdx.input.setInputProcessor(stage);
+        disparando = Gdx.input.isTouched();
     }
 
 

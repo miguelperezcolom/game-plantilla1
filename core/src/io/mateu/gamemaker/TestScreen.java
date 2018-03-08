@@ -27,8 +27,8 @@ public class TestScreen extends ScreenAdapter {
         this.juego = juego;
         this.game = game;
 
-        ancho = 1066;
-        alto = 600;
+        ancho = 450;
+        alto = 800;
         
         camara = new OrthographicCamera();
         camara.setToOrtho(false, ancho, alto);

@@ -74,6 +74,7 @@ public class FinPartida extends ScreenAdapter {
                 n.getJugador().setV(0, 0);
                 n.getJugador().setActivo(true);
                 n.getJugador().setStateTimeExplosion(0);
+                n.disparando = false;
                 juego.setNivelActual(n);
             }
         });

@@ -1,12 +1,12 @@
 <juego nombre="test1" sonidoRecord="levelup/chipquest.wav">
-    <menu ancho="600" alto="1066" />
-    <nivel nombre="level 1" ancho="600" alto="1066">
+    <menu ancho="450" alto="800" />
+    <nivel nombre="level 1" ancho="450" alto="800">
         <jugador pack="/space_shooter_art_pack_01/player/playership.png" imgs="16" rotacion="90" origen="random" sonidoDestruido="Alien_Sound_FX/SFX_Explosion_Large.wav"
                  explosion="/Effects/Explosion/explo.txt"
                  escalaExplosion="0.6"/>
         <balaamiga img="/img/missile1.png" ancho="20" alto="30" sonidoCreado="Alien_Sound_FX/SFX_AlienGunFiring_v1.wav" rotacion="90" escala="0.1" />
         <malox pack="/space_shooter_art_pack_01/attackers/atom.png" imgs="24" rotacion="90" origen="random" frecuencia="1600000" sonidoDestruido="Alien_Sound_FX/SFX_Explosion_Medium.wav" />
-        <malo apunta="si" pack="/space_shooter_art_pack_01/attackers/pinchhead.png" imgs="16" rotacion="90" origen="random" frecuencia="1600000" sonidoDestruido="Alien_Sound_FX/SFX_Explosion_Medium.wav"
+        <malo apunta="si" pack="/space_shooter_art_pack_01/attackers/pinchhead.png" imgs="16" rotacion="90" origen="random" frecuencia="1000000" sonidoDestruido="Alien_Sound_FX/SFX_Explosion_Medium.wav"
               explosion="/Effects/Explosion/explo.txt" escalaExplosion="0.3"/>
         <malo zigzag="si" pack="/space_shooter_art_pack_01/attackers/mohican.png" imgs="24" rotacion="90"
               origen="random" frecuencia="2200000"
