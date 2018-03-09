@@ -21,6 +21,8 @@ public class FinPartida extends ScreenAdapter {
     private final Stage stage;
     private final Label lscore;
     private OrthographicCamera camara;
+    private boolean play;
+    private boolean record;
 
     public FinPartida(final Juego juego, MyGdxGame game, XmlReader.Element xml) {
         this.juego = juego;
@@ -107,6 +109,17 @@ public class FinPartida extends ScreenAdapter {
         //game.font.draw(game.batch, "Pulsa donde quieras para empezar", 100, 100);
         game.batch.end();
 
+        if (play) {
+            System.out.println("play levelup");
+            Juego.get().getLevelUpSound().play();
+            Juego.get().getLevelUpSound().play();
+            if (record && juego.getLevelUpSound() != null) {
+                Juego.get().getLevelUpSound().play();
+                Juego.get().getLevelUpSound().play();
+            }
+            play = false;
+        }
+
         /*
         if (Gdx.input.isTouched()) {
             juego.setNivelActual(juego.getNiveles().get(0));
@@ -128,7 +141,7 @@ public class FinPartida extends ScreenAdapter {
         super.show();
 
 
-        boolean record = false;
+        record = false;
         int highScore = (juego.getPrefs().contains("highscore"))?juego.getPrefs().getInteger("highscore"):0;
         if (highScore < juego.puntos) {
             record = true;
@@ -141,11 +154,7 @@ public class FinPartida extends ScreenAdapter {
 
         //prefs.putBoolean("soundOn", true);
 
-
-        if (record && juego.getLevelUpSound() != null) {
-            juego.getLevelUpSound().play();
-        }
-
+        play = true;
 
         lscore.setText("Score: " + juego.puntos + "" + ((record)?"(New record!!!!)":"(Record: " + highScore + ")"));
         Gdx.input.setInputProcessor(stage);

@@ -57,8 +57,8 @@ public class Plantilla {
             alto = a.get(0).getRegionHeight() * escala;
         }
         if (xml.hasAttribute("frecuencia")) frecuencia = 1000l * Long.parseLong(xml.getAttribute("frecuencia"));
-        if (xml.hasAttribute("sonidoDestruido")) sonidoDestruido = Gdx.audio.newSound(Gdx.files.internal(xml.getAttribute("sonidoDestruido")));
-        if (xml.hasAttribute("sonidoCreado")) sonidoCreado = Gdx.audio.newSound(Gdx.files.internal(xml.getAttribute("sonidoCreado")));
+        if (xml.hasAttribute("sonidoDestruido")) sonidoDestruido = Juego.get().getAssetManager().get(xml.getAttribute("sonidoDestruido"));
+        if (xml.hasAttribute("sonidoCreado")) sonidoCreado = Juego.get().getAssetManager().get(xml.getAttribute("sonidoCreado"));
         if (xml.hasAttribute("explosion")) {
             String urlimg = xml.getAttribute("explosion");
             if (urlimg.startsWith("/")) urlimg = urlimg.substring(1);

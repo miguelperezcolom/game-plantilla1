@@ -51,8 +51,8 @@ public class Nivel extends ScreenAdapter {
     long inicioNivel = 0;
     float dificultad = 0;
 
-    int oldX = 0;
-    int oldY = 0;
+    float oldX = 0;
+    float oldY = 0;
 
 
     private List<Peon> jugadores = new ArrayList<>();
@@ -99,7 +99,7 @@ public class Nivel extends ScreenAdapter {
         for (XmlReader.Element e : xml.getChildrenByName("malo")) tiposMalos.add(new Plantilla(e));
 
         if (xml.hasAttribute("musica")) {
-            musica = Gdx.audio.newMusic(Gdx.files.internal(xml.getChildByName("musica").getAttribute("src")));
+            musica = Juego.get().getAssetManager().get(xml.getChildByName("musica").getAttribute("src"));
             musica.setLooping(true);
         }
 
@@ -110,20 +110,22 @@ public class Nivel extends ScreenAdapter {
         stage = new Stage() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                oldX = screenX;
-                oldY = screenY;
+                Vector3 v = camara.unproject(new Vector3(screenX, screenY, 0));
+                oldX = v.x;
+                oldY = v.y;
                 disparando = true;
                 return super.touchDown(screenX, screenY, pointer, button);
             }
 
             @Override
             public boolean touchDragged(int screenX, int screenY, int pointer) {
+                Vector3 v = camara.unproject(new Vector3(screenX, screenY, 0));
                 if (jugador.isActivo()) {
-                    jugador.setX(jugador.getX() + screenX - oldX);
-                    jugador.setY(jugador.getY() - screenY + oldY);
+                    jugador.setX(jugador.getX() + v.x - oldX);
+                    jugador.setY(jugador.getY() + v.y - oldY);
                 }
-                oldX = screenX;
-                oldY = screenY;
+                oldX = v.x;
+                oldY = v.y;
                 return super.touchDragged(screenX, screenY, pointer);
             }
 
@@ -262,6 +264,8 @@ public class Nivel extends ScreenAdapter {
 
         dificultad = TimeUtils.millis() - inicioNivel;
 
+        long segundos = new Float(dificultad / 1000).intValue();
+
         camara.update();
         game.batch.setProjectionMatrix(camara.combined);
 
@@ -335,10 +339,12 @@ public class Nivel extends ScreenAdapter {
 
 
         long ahora = TimeUtils.nanoTime();
-        for (Plantilla p : tiposMalos) {
-            long f = p.getFrecuencia();
-            f -= 500000 * dificultad / 1000;
-            if (ahora - ultimoDrop.get(p) > f) crearMalo(p);
+        if (segundos % 30 < 20) {
+            for (Plantilla p : tiposMalos) {
+                long f = p.getFrecuencia();
+                f -= 500000 * dificultad / 1000;
+                if (ahora - ultimoDrop.get(p) > f) crearMalo(p);
+            }
         }
 
         for (Peon m : malos) if (m.isActivo() && MathUtils.random(0, 40) == 0) disparar(m, balaEnemiga);

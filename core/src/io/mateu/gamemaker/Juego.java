@@ -3,6 +3,8 @@ package io.mateu.gamemaker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.XmlReader;
@@ -30,6 +32,7 @@ public class Juego {
 
     public int puntos = 0;
     public int vidas = 3;
+    private AssetManager assetManager;
 
 
     public Juego(MyGdxGame game, XmlReader.Element xml) {
@@ -37,16 +40,53 @@ public class Juego {
         this.game = game;
         skin = new Skin(Gdx.files.internal("skin/freezing-ui.json"));
 
+        cargarSonidos(xml);
+
         for (XmlReader.Element e : xml.getChildrenByName("nivel")) niveles.add(new Nivel(game, e));
 
         menu = new Menu(this, game, xml.getChildByName("menu"));
         finPartida = new FinPartida(this, game, xml.getChildByName("menu"));
 
+
         if (xml.hasAttribute("sonidoRecord")) {
-            levelUpSound = Gdx.audio.newSound(Gdx.files.internal(xml.getAttribute("sonidoRecord")));
+            levelUpSound = assetManager.get(xml.getAttribute("sonidoRecord"));
         }
 
         prefs = Gdx.app.getPreferences("Mis preferencias");
+    }
+
+    private void cargarSonidos(XmlReader.Element xml) {
+
+        assetManager = new AssetManager();
+
+        if (xml.hasAttribute("sonidoRecord")) {
+            assetManager.load(xml.getAttribute("sonidoRecord"), Sound.class);
+        }
+
+        for (XmlReader.Element en : xml.getChildrenByName("nivel")) {
+            if (en.hasAttribute("musica")) {
+                assetManager.load(xml.getChildByName("musica").getAttribute("src"), Music.class);
+            }
+
+            for (String n : new String[] {"jugador", "malo", "balaamiga", "balaenemiga"}) {
+
+                for (XmlReader.Element ex : en.getChildrenByName(n)) {
+                    if (ex.hasAttribute("sonidoCreado")) {
+                        assetManager.load(ex.getAttribute("sonidoCreado"), Sound.class);
+                    }
+                    if (ex.hasAttribute("sonidoDestruido")) {
+                        assetManager.load(ex.getAttribute("sonidoDestruido"), Sound.class);
+                    }
+                }
+
+            }
+
+
+        }
+
+        assetManager.finishLoading();
+
+
     }
 
     public float getAncho() {
@@ -101,5 +141,9 @@ public class Juego {
 
     public void setLevelUpSound(Sound levelUpSound) {
         this.levelUpSound = levelUpSound;
+    }
+
+    public AssetManager getAssetManager() {
+        return assetManager;
     }
 }
