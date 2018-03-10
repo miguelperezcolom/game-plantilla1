@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.XmlReader;
 
-public class Menu extends ScreenAdapter {
+public class Menu extends Pantalla {
 
     private final MyGdxGame game;
     private final float ancho;
@@ -24,6 +24,9 @@ public class Menu extends ScreenAdapter {
     private OrthographicCamera camara;
 
     public Menu(final Juego juego, MyGdxGame game, XmlReader.Element xml) {
+
+        super(xml);
+
         this.juego = juego;
         this.game = game;
 
@@ -46,19 +49,10 @@ public class Menu extends ScreenAdapter {
 
         TextButton eb;
         t.add(eb = new TextButton("Exit", juego.skin));
-        //button.setFillParent(true);
-        //t.setDebug(true);
-
-        /*
-        button.setWidth(200f);
-        button.setHeight(20f);
-        button.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 10f);
-        */
 
         pb.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                //button.setText("You clicked the button");
                 juego.puntos = 0;
                 juego.vidas = 3;
                 juego.setNivelActual(juego.getNiveles().get(0));
@@ -72,8 +66,6 @@ public class Menu extends ScreenAdapter {
                 Gdx.app.exit();
             }
         });
-
-        //stage.addActor(button);
 
 
     }
@@ -89,16 +81,7 @@ public class Menu extends ScreenAdapter {
 
         game.batch.begin();
         stage.draw();
-        //game.font.draw(game.batch, "Hola", 100, 150);
-        //game.font.draw(game.batch, "Pulsa donde quieras para empezar", 100, 100);
         game.batch.end();
-
-        /*
-        if (Gdx.input.isTouched()) {
-            juego.setNivelActual(juego.getNiveles().get(0));
-            dispose();
-        }
-        */
 
     }
 

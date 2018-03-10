@@ -2,6 +2,7 @@ package io.mateu.gamemaker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.XmlReader;
 
-public class FinPartida extends ScreenAdapter {
+public class FinPartida extends Pantalla {
 
     private final MyGdxGame game;
     private final float ancho;
@@ -25,6 +26,9 @@ public class FinPartida extends ScreenAdapter {
     private boolean record;
 
     public FinPartida(final Juego juego, MyGdxGame game, XmlReader.Element xml) {
+
+        super(xml);
+
         this.juego = juego;
         this.game = game;
 
@@ -111,12 +115,16 @@ public class FinPartida extends ScreenAdapter {
 
         if (play) {
             System.out.println("play levelup");
-            Juego.get().getLevelUpSound().play();
-            Juego.get().getLevelUpSound().play();
-            if (record && juego.getLevelUpSound() != null) {
-                Juego.get().getLevelUpSound().play();
-                Juego.get().getLevelUpSound().play();
+            if (getXml().hasAttribute("sonidoRecord")) {
+                Sound lus = getAssetManager().get(getXml().getAttribute("sonidoRecord"));
+                lus.play();
+
+                if (record) {
+                    lus.play();
+                    lus.play();
+                }
             }
+
             play = false;
         }
 
@@ -158,5 +166,10 @@ public class FinPartida extends ScreenAdapter {
 
         lscore.setText("Score: " + juego.puntos + "" + ((record)?"(New record!!!!)":"(Record: " + highScore + ")"));
         Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
+    public void cargarAssets() {
+        super.cargarAssets();
     }
 }

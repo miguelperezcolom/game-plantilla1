@@ -32,7 +32,7 @@ public class Plantilla {
     private long frecuencia;
     
 
-    public Plantilla(XmlReader.Element xml) {
+    public Plantilla(XmlReader.Element xml, AssetManager assetManager) {
         if (xml.hasAttribute("escala")) escala = Float.parseFloat(xml.getAttribute("escala"));
         if (xml.hasAttribute("escalaExplosion")) escalaExplosion = Float.parseFloat(xml.getAttribute("escalaExplosion"));
         if (xml.hasAttribute("rotacion")) rotacion = Float.parseFloat(xml.getAttribute("rotacion"));
@@ -56,9 +56,10 @@ public class Plantilla {
             ancho = a.get(0).getRegionWidth() * escala;
             alto = a.get(0).getRegionHeight() * escala;
         }
+
         if (xml.hasAttribute("frecuencia")) frecuencia = 1000l * Long.parseLong(xml.getAttribute("frecuencia"));
-        if (xml.hasAttribute("sonidoDestruido")) sonidoDestruido = Juego.get().getAssetManager().get(xml.getAttribute("sonidoDestruido"));
-        if (xml.hasAttribute("sonidoCreado")) sonidoCreado = Juego.get().getAssetManager().get(xml.getAttribute("sonidoCreado"));
+        if (xml.hasAttribute("sonidoDestruido")) sonidoDestruido = assetManager.get(xml.getAttribute("sonidoDestruido"));
+        if (xml.hasAttribute("sonidoCreado")) sonidoCreado = assetManager.get(xml.getAttribute("sonidoCreado"));
         if (xml.hasAttribute("explosion")) {
             String urlimg = xml.getAttribute("explosion");
             if (urlimg.startsWith("/")) urlimg = urlimg.substring(1);

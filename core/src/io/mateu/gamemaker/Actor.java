@@ -20,10 +20,6 @@ public class Actor {
     float rotacion;
     private Vector2 posHit = null;
 
-    public Actor(XmlReader.Element xml) {
-        this(new Plantilla(xml));
-    }
-
     public Actor(Plantilla plantilla) {
         this.plantilla = plantilla;
         rotacion = plantilla.getRotacion();

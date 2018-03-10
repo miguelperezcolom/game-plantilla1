@@ -31,15 +31,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Nivel extends ScreenAdapter {
+public class Nivel extends Pantalla {
 
     private final Stage stage;
     //private final Touchpad tp;
     private final Stage stageFondo;
     private final Label lscore;
     private final Label lvidas;
-    private Plantilla balaAmiga;
-    private Plantilla balaEnemiga;
+    private final XmlReader.Element xmlNivel;
+    Map<String, Plantilla> plantillas;
     private Music musica;
     private final float ancho;
     private final float alto;
@@ -75,12 +75,16 @@ public class Nivel extends ScreenAdapter {
     public boolean disparando;
 
 
-    public Nivel(MyGdxGame game, XmlReader.Element xml) {
+    public Nivel(MyGdxGame game, XmlReader.Element xml, XmlReader.Element xmlNivel) {
+
+        super(xml);
+
+        this.xmlNivel = xmlNivel;
 
         this.game = game;
 
-        ancho = Float.parseFloat(xml.getAttribute("ancho"));
-        alto = Float.parseFloat(xml.getAttribute("alto"));
+        ancho = Float.parseFloat(xmlNivel.getAttribute("ancho"));
+        alto = Float.parseFloat(xmlNivel.getAttribute("alto"));
 
         camara = new OrthographicCamera();
         camara.setToOrtho(false, ancho, alto);
@@ -88,20 +92,7 @@ public class Nivel extends ScreenAdapter {
 
 
 
-        jugador = new Peon(xml.getChildByName("jugador"));
 
-        jugador.setX(ancho / 2);
-        jugador.setY(alto / 4);
-
-        balaAmiga = new Plantilla(xml.getChildByName("balaamiga"));
-        balaEnemiga = new Plantilla(xml.getChildByName("balaenemiga"));
-
-        for (XmlReader.Element e : xml.getChildrenByName("malo")) tiposMalos.add(new Plantilla(e));
-
-        if (xml.hasAttribute("musica")) {
-            musica = Juego.get().getAssetManager().get(xml.getChildByName("musica").getAttribute("src"));
-            musica.setLooping(true);
-        }
 
         ultimoDrop = new HashMap<>();
         for (Plantilla p : tiposMalos) ultimoDrop.put(p, TimeUtils.nanoTime());
@@ -340,14 +331,15 @@ public class Nivel extends ScreenAdapter {
 
         long ahora = TimeUtils.nanoTime();
         if (segundos % 30 < 20) {
-            for (Plantilla p : tiposMalos) {
+            for (XmlReader.Element e : xmlNivel.getChildrenByName("malo")) {
+                Plantilla p = plantillas.get(e.getAttribute("id"));
                 long f = p.getFrecuencia();
                 f -= 500000 * dificultad / 1000;
                 if (ahora - ultimoDrop.get(p) > f) crearMalo(p);
             }
         }
 
-        for (Peon m : malos) if (m.isActivo() && MathUtils.random(0, 40) == 0) disparar(m, balaEnemiga);
+        for (Peon m : malos) if (m.isActivo() && MathUtils.random(0, 40) == 0) disparar(m, plantillas.get("balaenemiga"));
 
         List<Peon> borrar = new ArrayList<>();
 
@@ -439,7 +431,7 @@ public class Nivel extends ScreenAdapter {
     private void disparar() {
         System.out.println("disparar");
         Peon bala;
-        balasAmigas.add(bala = new Peon(balaAmiga));
+        balasAmigas.add(bala = new Peon(plantillas.get("balaamiga")));
         bala.setX(jugador.getX());
         bala.setY(jugador.getY());
         bala.setV(0, 400);
@@ -493,5 +485,37 @@ public class Nivel extends ScreenAdapter {
 
     public float getAlto() {
         return alto;
+    }
+
+    @Override
+    public void cargarAssets() {
+        super.cargarAssets();
+        plantillas = new HashMap<>();
+
+        plantillas.put("jugador", new Plantilla(xmlNivel.getChildByName("jugador"), getAssetManager()));
+        plantillas.put("balaamiga", new Plantilla(xmlNivel.getChildByName("balaamiga"), getAssetManager()));
+        plantillas.put("balaenemiga", new Plantilla(xmlNivel.getChildByName("balaenemiga"), getAssetManager()));
+
+        for (XmlReader.Element e : xmlNivel.getChildrenByName("malo")) plantillas.put(e.getAttribute("id"), new Plantilla(e, getAssetManager()));
+
+        if (xmlNivel.hasChild("musica")) {
+            musica = getAssetManager().get(xmlNivel.getChildByName("musica").getAttribute("src"));
+            musica.setLooping(true);
+        }
+
+
+        jugador = new Peon(plantillas.get("jugador"));
+
+        jugador.setX(ancho / 2);
+        jugador.setY(alto / 4);
+
+
+        for (XmlReader.Element e : xmlNivel.getChildrenByName("malo")) {
+            plantillas.put(e.getAttribute("id"), new Plantilla(e, getAssetManager()));
+            ultimoDrop.put(plantillas.get(e.getAttribute("id")), TimeUtils.millis());
+            //malos.add(new Peon(plantillas.get(e.getAttribute("id"))));
+        }
+
+
     }
 }

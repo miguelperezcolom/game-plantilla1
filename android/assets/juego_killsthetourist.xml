@@ -1,5 +1,5 @@
-<juego nombre="test1">
-    <menu ancho="450" alto="800" sonidoRecord="levelup/chipquest.wav" />
+<juego nombre="test1" sonidoRecord="levelup/chipquest.wav">
+    <menu ancho="450" alto="800" />
     <nivel nombre="level 1" ancho="450" alto="800">
         <jugador pack="/space_shooter_art_pack_01/player/playership.png" imgs="16" rotacion="90" origen="random"
                  sonidoDestruido="killsthetourist/explosion.wav"
@@ -26,7 +26,7 @@
               explosion="/Effects/Explosion/explo.txt"
               escalaExplosion="0.3"
         />
-        <balaenemiga img="/img/missile1.png" ancho="20" alto="30" sonidoCreado="killsthetourist/pou.wav"  rotacion="270" escala="0.1" />
+        <balaenemiga img="/img/missile1.png" ancho="20" alto="30" sonidoCreado="killsthetourist/piu.wav"  rotacion="270" escala="0.1" />
         <musicax src="masai.mp3" />
     </nivel>
 </juego>

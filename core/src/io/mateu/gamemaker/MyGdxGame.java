@@ -27,19 +27,11 @@ public class MyGdxGame extends Game {
 
 			juego = new Juego(this, xml);
 
-			//setScreen(new TestScreen(juego, this, null));
-
-			//setScreen(new TestScreenAdapter());
-
 			juego.setNivelActual(juego.getNiveles().get(0));
-			//juego.setNivelActual(new Nivel(this, xml.getChildrenByName("nivel").get(0)));
-			//juego.start();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		//System.out.println("Juego=" + xml.getAttribute("nombre"));
 
 	}
 
@@ -47,7 +39,6 @@ public class MyGdxGame extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		//imgJugador.dispose();
 		font.dispose();
 	}
 }

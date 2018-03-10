@@ -6,11 +6,6 @@ public class Peon extends Actor {
 
     private Peon proyectil;
 
-
-    public Peon(XmlReader.Element xml) {
-        super(xml);
-    }
-
     public Peon(Plantilla plantilla) {
         super(plantilla);
     }
