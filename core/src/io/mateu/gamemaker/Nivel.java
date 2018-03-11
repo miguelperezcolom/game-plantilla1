@@ -195,6 +195,7 @@ public class Nivel extends Pantalla {
             Image i;
             stageFondo.addActor(i = new Image(new Texture(Gdx.files.internal(imgsFondo[0]))));
             i.setBounds(0, 0, ancho, alto);
+            i.setFillParent(true);
             if (sergi) {
                 stageFondo.addActor(torre = new Image(new Texture(Gdx.files.internal("sergi/torre.png"))));
             }
