@@ -23,9 +23,9 @@ public class Menu extends Pantalla {
     private final Stage stage;
     private OrthographicCamera camara;
 
-    public Menu(final Juego juego, MyGdxGame game, XmlReader.Element xml) {
+    public Menu(final Juego juego, final MyGdxGame game, XmlReader.Element xml) {
 
-        super(xml);
+        //super(xml);
 
         this.juego = juego;
         this.game = game;
@@ -48,14 +48,23 @@ public class Menu extends Pantalla {
         t.row();
 
         TextButton eb;
-        t.add(eb = new TextButton("Exit", juego.skin));
+        t.add(eb = new TextButton("Back to Menu", juego.skin));
 
         pb.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
                 juego.puntos = 0;
                 juego.vidas = 3;
-                juego.setNivelActual(juego.getNiveles().get(0));
+                Nivel n = juego.getNiveles().get(0);
+                n.malos.clear();
+                n.balasEnemigas.clear();
+                n.getJugador().setX(ancho / 2);
+                n.getJugador().setY(alto / 4);
+                n.getJugador().setV(0, 0);
+                n.getJugador().setActivo(true);
+                n.getJugador().setStateTimeExplosion(0);
+                n.disparando = false;
+                juego.setNivelActual(n);
             }
         });
 
@@ -63,7 +72,7 @@ public class Menu extends Pantalla {
         eb.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                Gdx.app.exit();
+                game.setScreen(game.supermenu);
             }
         });
 

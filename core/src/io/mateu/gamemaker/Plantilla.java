@@ -25,14 +25,19 @@ public class Plantilla {
     private float rotacion = 0f;
     private float escalaExplosion = 1f;
     private boolean disparoDirigido = false;
+    private boolean dispara = false;
+    private boolean gira = false;
+    private int vida = 1;
 
     private float ancho;
     private float alto;
+    private float radio;
 
     private long frecuencia;
     
 
     public Plantilla(XmlReader.Element xml, AssetManager assetManager) {
+        if (xml.hasAttribute("gira") && "si".equalsIgnoreCase(xml.getAttribute("gira"))) gira = true;
         if (xml.hasAttribute("escala")) escala = Float.parseFloat(xml.getAttribute("escala"));
         if (xml.hasAttribute("escalaExplosion")) escalaExplosion = Float.parseFloat(xml.getAttribute("escalaExplosion"));
         if (xml.hasAttribute("rotacion")) rotacion = Float.parseFloat(xml.getAttribute("rotacion"));
@@ -44,6 +49,7 @@ public class Plantilla {
             sprite.setOrigin(0, 0);
             ancho = img.getWidth() * escala;
             alto = img.getHeight() * escala;
+
             sprite.setScale(escala);
             sprite.setRotation(rotacion);
         } else if (xml.hasAttribute("pack")) {
@@ -56,6 +62,8 @@ public class Plantilla {
             ancho = a.get(0).getRegionWidth() * escala;
             alto = a.get(0).getRegionHeight() * escala;
         }
+        radio = Math.max(ancho, alto) / 2;
+        if (xml.hasAttribute("radio")) radio = Long.parseLong(xml.getAttribute("radio"));
 
         if (xml.hasAttribute("frecuencia")) frecuencia = 1000l * Long.parseLong(xml.getAttribute("frecuencia"));
         if (xml.hasAttribute("sonidoDestruido")) sonidoDestruido = assetManager.get(xml.getAttribute("sonidoDestruido"));
@@ -67,6 +75,7 @@ public class Plantilla {
         }
         if (xml.hasAttribute("apunta") && "si".equalsIgnoreCase(xml.getAttribute("apunta"))) disparoDirigido = true;
         if (xml.hasAttribute("zigzag") && "si".equalsIgnoreCase(xml.getAttribute("zigzag"))) zigzag = true;
+        if (xml.hasAttribute("dispara") && "si".equalsIgnoreCase(xml.getAttribute("dispara"))) dispara = true;
     }
 
     public Texture getImg() {
@@ -143,5 +152,37 @@ public class Plantilla {
 
     public boolean isZigzag() {
         return zigzag;
+    }
+
+    public void setRotacion(float rotacion) {
+        this.rotacion = rotacion;
+    }
+
+    public boolean isDispara() {
+        return dispara;
+    }
+
+    public void setDispara(boolean dispara) {
+        this.dispara = dispara;
+    }
+
+    public float getRadio() {
+        return radio;
+    }
+
+    public boolean isGira() {
+        return gira;
+    }
+
+    public void setGira(boolean gira) {
+        this.gira = gira;
+    }
+
+    public int getVida() {
+        return vida;
+    }
+
+    public void setVida(int vida) {
+        this.vida = vida;
     }
 }

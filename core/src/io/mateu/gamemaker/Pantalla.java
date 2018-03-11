@@ -8,11 +8,14 @@ import com.badlogic.gdx.utils.XmlReader;
 
 public class Pantalla extends ScreenAdapter {
 
-    private final XmlReader.Element xml;
+    public XmlReader.Element xml;
     private AssetManager assetManager;
 
-    public Pantalla(XmlReader.Element xml) {
+    public Pantalla() {
         assetManager = new AssetManager();
+    }
+
+    public void setXml(XmlReader.Element xml) {
         this.xml = xml;
     }
 
@@ -30,32 +33,37 @@ public class Pantalla extends ScreenAdapter {
 
     public void cargarAssets() {
 
-        if (xml.hasAttribute("sonidoRecord")) {
-            assetManager.load(xml.getAttribute("sonidoRecord"), Sound.class);
-        }
+        if (xml != null) {
 
-        for (XmlReader.Element en : xml.getChildrenByName("nivel")) {
-            if (en.hasAttribute("musica")) {
-                assetManager.load(xml.getChildByName("musica").getAttribute("src"), Music.class);
+            if (xml.hasAttribute("sonidoRecord")) {
+                assetManager.load(xml.getAttribute("sonidoRecord"), Sound.class);
             }
 
-            for (String n : new String[] {"jugador", "malo", "balaamiga", "balaenemiga"}) {
-
-                for (XmlReader.Element ex : en.getChildrenByName(n)) {
-                    if (ex.hasAttribute("sonidoCreado")) {
-                        assetManager.load(ex.getAttribute("sonidoCreado"), Sound.class);
-                    }
-                    if (ex.hasAttribute("sonidoDestruido")) {
-                        assetManager.load(ex.getAttribute("sonidoDestruido"), Sound.class);
-                    }
+            for (XmlReader.Element en : xml.getChildrenByName("nivel")) {
+                if (en.hasAttribute("musica")) {
+                    assetManager.load(xml.getChildByName("musica").getAttribute("src"), Music.class);
                 }
 
+                for (String n : new String[] {"jugador", "malo", "balaamiga", "balaenemiga"}) {
+
+                    for (XmlReader.Element ex : en.getChildrenByName(n)) {
+                        if (ex.hasAttribute("sonidoCreado")) {
+                            assetManager.load(ex.getAttribute("sonidoCreado"), Sound.class);
+                        }
+                        if (ex.hasAttribute("sonidoDestruido")) {
+                            assetManager.load(ex.getAttribute("sonidoDestruido"), Sound.class);
+                        }
+                    }
+
+                }
+
+
             }
 
+            assetManager.finishLoading();
 
         }
 
-        assetManager.finishLoading();
 
     }
 

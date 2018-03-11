@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -18,22 +19,24 @@ public class FinPartida extends Pantalla {
     private final MyGdxGame game;
     private final float ancho;
     private final float alto;
-    private final Juego juego;
     private final Stage stage;
     private final Label lscore;
+    private final Skin skin;
     private OrthographicCamera camara;
     private boolean play;
     private boolean record;
+    private Juego juego;
 
-    public FinPartida(final Juego juego, MyGdxGame game, XmlReader.Element xml) {
+    public FinPartida(final MyGdxGame game) {
 
-        super(xml);
+        super();
 
-        this.juego = juego;
+
+        skin = new Skin(Gdx.files.internal("skin/freezing-ui.json"));
         this.game = game;
 
-        ancho = Float.parseFloat(xml.getAttribute("ancho"));
-        alto = Float.parseFloat(xml.getAttribute("alto"));
+        ancho = 800;
+        alto = 450;
         
         camara = new OrthographicCamera();
         camara.setToOrtho(false, ancho, alto);
@@ -41,30 +44,22 @@ public class FinPartida extends Pantalla {
         stage = new Stage();
 
         Table t;
-        stage.addActor(t = new Table(juego.skin));
+        stage.addActor(t = new Table(skin));
 
         t.setFillParent(true);
 
-        t.add(new Label("You lost", juego.skin)).padBottom(10);
+        t.add(new Label("You lost", skin)).padBottom(10);
         t.row();
-        t.add(lscore = new Label("Score: " + juego.puntos, juego.skin)).padBottom(10);
+        t.add(lscore = new Label("Score: ", skin)).padBottom(10);
         t.row();
 
         TextButton pb;
-        t.add(pb = new TextButton("Play again", juego.skin)).padBottom(10);
+        t.add(pb = new TextButton("Play again", skin)).padBottom(10);
 
         t.row();
 
         TextButton eb;
-        t.add(eb = new TextButton("Exit", juego.skin));
-        //button.setFillParent(true);
-        //t.setDebug(true);
-
-        /*
-        button.setWidth(200f);
-        button.setHeight(20f);
-        button.setPosition(Gdx.graphics.getWidth() /2 - 100f, Gdx.graphics.getHeight()/2 - 10f);
-        */
+        t.add(eb = new TextButton("Back to Menu", skin));
 
         pb.addListener(new ClickListener(){
             @Override
@@ -89,7 +84,7 @@ public class FinPartida extends Pantalla {
         eb.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                Gdx.app.exit();
+                game.setScreen(game.supermenu);
             }
         });
 
@@ -109,8 +104,6 @@ public class FinPartida extends Pantalla {
 
         game.batch.begin();
         stage.draw();
-        //game.font.draw(game.batch, "Hola", 100, 150);
-        //game.font.draw(game.batch, "Pulsa donde quieras para empezar", 100, 100);
         game.batch.end();
 
         if (play) {
@@ -127,13 +120,6 @@ public class FinPartida extends Pantalla {
 
             play = false;
         }
-
-        /*
-        if (Gdx.input.isTouched()) {
-            juego.setNivelActual(juego.getNiveles().get(0));
-            dispose();
-        }
-        */
 
     }
 
@@ -157,11 +143,6 @@ public class FinPartida extends Pantalla {
             Juego.get().getPrefs().flush();
         }
 
-        //Juego.get().getPrefs().putString("name", "Donald Duck");
-        //String name = prefs.getString("name", "No name stored");
-
-        //prefs.putBoolean("soundOn", true);
-
         play = true;
 
         lscore.setText("Score: " + juego.puntos + "" + ((record)?"(New record!!!!)":"(Record: " + highScore + ")"));
@@ -171,5 +152,9 @@ public class FinPartida extends Pantalla {
     @Override
     public void cargarAssets() {
         super.cargarAssets();
+    }
+
+    public void setJuego(Juego juego) {
+        this.juego = juego;
     }
 }

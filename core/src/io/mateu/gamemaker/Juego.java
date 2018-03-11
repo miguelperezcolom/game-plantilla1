@@ -19,6 +19,8 @@ public class Juego {
     private final MyGdxGame game;
     private static Juego instancia;
 
+    private boolean debug = false;
+
 
     private Sound levelUpSound;
 
@@ -39,10 +41,11 @@ public class Juego {
         this.game = game;
         skin = new Skin(Gdx.files.internal("skin/freezing-ui.json"));
 
-        for (XmlReader.Element e : xml.getChildrenByName("nivel")) niveles.add(new Nivel(game, xml, e));
+        for (XmlReader.Element e : xml.getChildrenByName("nivel")) niveles.add(new Nivel(game, this, xml, e));
 
         menu = new Menu(this, game, xml.getChildByName("menu"));
-        finPartida = new FinPartida(this, game, xml.getChildByName("menu"));
+        finPartida = new FinPartida(game);
+        finPartida.setJuego(this);
 
         prefs = Gdx.app.getPreferences("Mis preferencias");
     }
@@ -101,4 +104,7 @@ public class Juego {
         this.levelUpSound = levelUpSound;
     }
 
+    public boolean isDebug() {
+        return debug;
+    }
 }

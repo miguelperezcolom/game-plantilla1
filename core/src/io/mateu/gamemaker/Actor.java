@@ -2,6 +2,7 @@ package io.mateu.gamemaker;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -19,13 +20,17 @@ public class Actor {
     public float stateTimeExplosionHit = 0f;
     float rotacion;
     private Vector2 posHit = null;
+    private float deltaAgulo = 0;
+    private int vida = 1;
+
 
     public Actor(Plantilla plantilla) {
         this.plantilla = plantilla;
         rotacion = plantilla.getRotacion();
-        float r = Math.max(plantilla.getAncho(), plantilla.getAlto()) * plantilla.getEscala() / 2;
+        float r = plantilla.getRadio();
         rect = new Circle(0, 0, r);
         if (plantilla.getSonidoCreado() != null) plantilla.getSonidoCreado().play();
+        vida = plantilla.getVida();
     }
 
 
@@ -49,16 +54,30 @@ public class Actor {
     public void draw(SpriteBatch batch) {
         //System.out.println("x=" + rect.x + ", y=" + rect.y + ", r=" + rect.radius );
         if (activo) {
+
+            if (Juego.get().isDebug()) {
+                batch.end();
+                ShapeRenderer shapeRenderer = new ShapeRenderer();
+
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(1, 1, 0, 1);
+                //shapeRenderer.line(x, y, x2, y2);
+                //shapeRenderer.rect(x, y, width, height);
+                shapeRenderer.circle(rect.x, rect.y, rect.radius);
+                shapeRenderer.end();
+                batch.begin();
+            }
+
+
             if (plantilla.getSprite() != null) {
-                plantilla.getSprite().setX(rect.x - rect.radius);
-                plantilla.getSprite().setY(rect.y - rect.radius);
+
                 batch.draw(
                         plantilla.getSprite(),
-                        rect.x, rect.y,
-                        -rect.radius, -rect.radius,
+                        rect.x - plantilla.getAncho() / 2, rect.y - plantilla.getAlto() / 2,
+                        plantilla.getAncho() / 2, plantilla.getAlto() / 2,
 
-                        plantilla.getSprite().getWidth() * plantilla.getEscala(), plantilla.getSprite().getHeight() * plantilla.getEscala()
-                        , 1f, 1f, rotacion);
+                        plantilla.getAncho(), plantilla.getAlto()
+                        , 1f, 1f, rotacion + deltaAgulo);
             } else if (plantilla.getAnimacion() != null) {
                 TextureRegion currentFrame = plantilla.getAnimacion().getKeyFrame(stateTime);
                 //System.out.println("w=" + currentFrame.getRegionWidth() + ", h=" + currentFrame.getRegionHeight());
@@ -135,7 +154,11 @@ public class Actor {
         rect.y = rect.y + delta * v.y;
 
         if (plantilla.isZigzag()) {
-            if (getX() < getAncho() || getX() > Juego.get().getNivelActual().getAncho() - getAncho()) v.x *= -1;
+            if (Juego.get().getAlto() > Juego.get().getAncho()) {
+                if (getX() < getAncho() || getX() > Juego.get().getNiveles().get(0).getAncho() - getAncho()) v.x *= -1;
+            } else {
+                if (getY() < getAlto() || getY() > Juego.get().getNiveles().get(0).getAlto() - getAlto()) v.y *= -1;
+            }
         }
 
         stateTime += delta;
@@ -145,6 +168,10 @@ public class Actor {
         }
         if (posHit != null  && plantilla.getExplosion() != null) {
             stateTimeExplosionHit += delta;
+        }
+
+        if (plantilla.isGira()) {
+            deltaAgulo += 400 * delta;
         }
     }
 
@@ -204,5 +231,13 @@ public class Actor {
 
     public void setStateTimeExplosion(int stateTimeExplosion) {
         this.stateTimeExplosion = stateTimeExplosion;
+    }
+
+    public int getVida() {
+        return vida;
+    }
+
+    public void setVida(int vida) {
+        this.vida = vida;
     }
 }

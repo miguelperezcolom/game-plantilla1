@@ -13,25 +13,19 @@ public class MyGdxGame extends Game {
 
 	private XmlReader.Element xml;
 	private Juego juego;
+	public SuperMenu supermenu;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 
-		Gdx.graphics.setTitle("Test GUI");
+		Gdx.graphics.setTitle("Mallorca mini games");
 
-		try {
 
-			xml = new XmlReader().parse(Gdx.files.internal("juego.xml"));
+		supermenu = new SuperMenu(this);
 
-			juego = new Juego(this, xml);
-
-			juego.setNivelActual(juego.getNiveles().get(0));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		setScreen(supermenu);
 
 	}
 
